@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sykallou Thesis - Pyvis Graphs (Results)</title>
+<meta charset="utf-8">
+<style>
+  body { display: flex; height: 100vh; margin: 0; font-family: sans-serif; }
+  #list { width: 300px; /* Fixed width for the list */ height: 100%; display: flex; flex-direction: column; border-right: 1px solid #ccc; background-color: #f8f9fa; }
+  #search-container { padding: 10px 15px; border-bottom: 1px solid #dee2e6; }
+  #search-input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ced4da; border-radius: 4px; }
+  #list-content { flex-grow: 1; overflow-y: auto; padding: 15px; }
+  #display { flex-grow: 1; /* Takes remaining space */ height: 100%; }
+  iframe { width: 100%; height: 100%; border: none; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { margin-bottom: 8px; }
+  a { text-decoration: none; color: #0056b3; cursor: pointer; display: block; padding: 5px; border-radius: 4px; }
+  a:hover { text-decoration: none; background-color: #e9ecef; }
+  h2 { margin-top: 0; color: #343a40; padding: 15px 15px 10px 15px; border-bottom: 1px solid #dee2e6; margin-bottom: 0;}
+  /* Style for the initially loaded message */
+  #display p { padding: 20px; font-style: italic; color: #6c757d; text-align: center;}
+</style>
+</head>
+<body>
+
+<div id="list">
+  <h2>Explanations</h2>
+  <div id="search-container">
+    <input type="text" id="search-input" placeholder="Search explanations...">
+  </div>
+  <div id="list-content">
+    <ul id="explanation-list">
+      </ul>
+  </div>
+</div>
+
+<div id="display">
+  <p>Select an explanation from the list on the left to view the graph.</p>
+  <iframe id="graph-frame" title="Graph Display" style="display: none;"></iframe>
+</div>
+
+<script>
+  const explanationList = document.getElementById('explanation-list');
+  const graphFrame = document.getElementById('graph-frame');
+  const displayDiv = document.getElementById('display');
+  const initialMessage = displayDiv.querySelector('p');
+  const searchInput = document.getElementById('search-input');
+
+  const files = [
+    { name: "Amine Group - Leigh Disease", path: "pyvis_explanation_graph/PVEXPGR_Amine Group_LINKED_Leigh Disease.html" },
+    { name: "Arginine - Glutaric aciduria, type 1", path: "pyvis_explanation_graph/PVEXPGR_Arginine_LINKED_Glutaric aciduria, type 1.html" },
+    { name: "Dopamine - Machado-Joseph Disease", path: "pyvis_explanation_graph/PVEXPGR_Dopamine_LINKED_Machado-Joseph Disease.html" },
+    { name: "ethynodiol diacetate - Myotonic Dystrophy", path: "pyvis_explanation_graph/PVEXPGR_ethynodiol diacetate_LINKED_Myotonic Dystrophy.html" },
+    { name: "Fentanyl - Myotonic Dystrophy", path: "pyvis_explanation_graph/PVEXPGR_Fentanyl_LINKED_Myotonic Dystrophy.html" },
+    { name: "FG-9065 - Myasthenic Syndromes, Congenital", path: "pyvis_explanation_graph/PVEXPGR_FG-9065_LINKED_Myasthenic Syndromes, Congenital.html" },
+    { name: "GABA-B Receptor Antagonists - succinic semialdehyde dehydrogenase deficiency", path: "pyvis_explanation_graph/PVEXPGR_GABA-B Receptor Antagonists_LINKED_succinic semialdehyde dehydrogenase deficiency.html" },
+    { name: "Glutaric aciduria, type 1 - glutaric acid", path: "pyvis_explanation_graph/PVEXPGR_Glutaric aciduria, type 1_LINKED_glutaric acid.html" },
+    { name: "Glutaric aciduria, type 1 - Quinine", path: "pyvis_explanation_graph/PVEXPGR_Glutaric aciduria, type 1_LINKED_Quinine.html" },
+    { name: "Glycogen - Myotonic Dystrophy", path: "pyvis_explanation_graph/PVEXPGR_Glycogen_LINKED_Myotonic Dystrophy.html" },
+    { name: "Immunoglobulins, Intravenous - Myasthenic Syndromes, Congenital", path: "pyvis_explanation_graph/PVEXPGR_Immunoglobulins, Intravenous_LINKED_Myasthenic Syndromes, Congenital.html" },
+    { name: "Leigh Disease - deterenol hydrochloride, (+-)-isomer", path: "pyvis_explanation_graph/PVEXPGR_Leigh Disease_LINKED_deterenol hydrochloride, (+-)-isomer.html" },
+    { name: "Leigh Disease - NADH", path: "pyvis_explanation_graph/PVEXPGR_Leigh Disease_LINKED_NADH.html" },
+    { name: "Leigh Disease - Nicotinamide adenine dinucleotide (NAD)", path: "pyvis_explanation_graph/PVEXPGR_Leigh Disease_LINKED_Nicotinamide adenine dinucleotide (NAD).html" },
+    { name: "lithium pentanoate - Leigh Disease", path: "pyvis_explanation_graph/PVEXPGR_lithium pentanoate_LINKED_Leigh Disease.html" },
+    { name: "Lysine - Glutaric aciduria, type 1", path: "pyvis_explanation_graph/PVEXPGR_Lysine_LINKED_Glutaric aciduria, type 1.html" },
+    { name: "Lysine - Leigh Disease", path: "pyvis_explanation_graph/PVEXPGR_Lysine_LINKED_Leigh Disease.html" },
+    { name: "Machado-Joseph Disease - Amphotericin", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Amphotericin.html" },
+    { name: "Machado-Joseph Disease - Befiradol", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Befiradol.html" },
+    { name: "Machado-Joseph Disease - Biopterin", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Biopterin.html" },
+    { name: "Machado-Joseph Disease - CALCIUM HOMEOSTASIS", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_CALCIUM HOMEOSTASIS.html" },
+    { name: "Machado-Joseph Disease - Glycogen", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Glycogen.html" },
+    { name: "Machado-Joseph Disease - Lithium", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Lithium.html" },
+    { name: "Machado-Joseph Disease - Mediator brand of benfluorex hydrochloride", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Mediator brand of benfluorex hydrochloride.html" },
+    { name: "Machado-Joseph Disease - padeliporfin", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_padeliporfin.html" },
+    { name: "Machado-Joseph Disease - Suppressor", path: "pyvis_explanation_graph/PVEXPGR_Machado-Joseph Disease_LINKED_Suppressor.html" },
+    { name: "MK-135 - Myasthenic Syndromes, Congenital", path: "pyvis_explanation_graph/PVEXPGR_MK-135_LINKED_Myasthenic Syndromes, Congenital.html" },
+    { name: "Morphine - Myotonic Dystrophy", path: "pyvis_explanation_graph/PVEXPGR_Morphine_LINKED_Myotonic Dystrophy.html" },
+    { name: "Myasthenic Syndromes, Congenital - Albuterol", path: "pyvis_explanation_graph/PVEXPGR_Myasthenic Syndromes, Congenital_LINKED_Albuterol.html" },
+    { name: "Myotonic Dystrophy - beta adrenergic agent", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_beta adrenergic agent.html" },
+    { name: "Myotonic Dystrophy - Clomipramine", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_Clomipramine.html" },
+    { name: "Myotonic Dystrophy - Dantrolene Sodium", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_Dantrolene Sodium.html" },
+    { name: "Myotonic Dystrophy - Metformin", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_Metformin.html" },
+    { name: "Myotonic Dystrophy - mivacurium", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_mivacurium.html" },
+    { name: "Myotonic Dystrophy - N-Acetylneuraminic Acid", path: "pyvis_explanation_graph/PVEXPGR_Myotonic Dystrophy_LINKED_N-Acetylneuraminic Acid.html" },
+    { name: "pentamethylmelamine - Congenital disorder of glycosylation type 1A", path: "pyvis_explanation_graph/PVEXPGR_pentamethylmelamine_LINKED_Congenital disorder of glycosylation type 1A.html" },
+    { name: "phosphomevalonic acid, (+-)-isomer - succinic semialdehyde dehydrogenase deficiency", path: "pyvis_explanation_graph/PVEXPGR_phosphomevalonic acid, (+-)-isomer_LINKED_succinic semialdehyde dehydrogenase deficiency.html" },
+    { name: "Program - Myotonic Dystrophy", path: "pyvis_explanation_graph/PVEXPGR_Program_LINKED_Myotonic Dystrophy.html" },
+    { name: "Pyridoxal Phosphate - EPILEPSY, PYRIDOXINE-DEPENDENT", path: "pyvis_explanation_graph/PVEXPGR_Pyridoxal Phosphate_LINKED_EPILEPSY, PYRIDOXINE-DEPENDENT.html" },
+    { name: "Quinolinic Acid - Glutaric aciduria, type 1", path: "pyvis_explanation_graph/PVEXPGR_Quinolinic Acid_LINKED_Glutaric aciduria, type 1.html" },
+    { name: "Riboflavin - Glutaric aciduria, type 1", path: "pyvis_explanation_graph/PVEXPGR_Riboflavin_LINKED_Glutaric aciduria, type 1.html" },
+    { name: "Sirolimus - Leigh Disease", path: "pyvis_explanation_graph/PVEXPGR_Sirolimus_LINKED_Leigh Disease.html" },
+    { name: "Tryptophan - Glutaric aciduria, type 1", path: "pyvis_explanation_graph/PVEXPGR_Tryptophan_LINKED_Glutaric aciduria, type 1.html" }
+  ];
+
+  
+  function populateList(filter = '') {
+    explanationList.innerHTML = ''; 
+    const lowerCaseFilter = filter.toLowerCase();
+
+    files.forEach(file => {
+      if (file.name.toLowerCase().includes(lowerCaseFilter)) {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        link.textContent = file.name;
+        link.href = file.path; 
+        link.onclick = (event) => {
+          event.preventDefault(); 
+          if (initialMessage) {
+            initialMessage.style.display = 'none'; 
+           }
+          graphFrame.src = file.path; 
+          graphFrame.style.display = 'block'; 
+        };
+        listItem.appendChild(link);
+        explanationList.appendChild(listItem);
+      }
+    });
+  }
+
+  populateList();
+
+  searchInput.addEventListener('keyup', (event) => {
+    populateList(event.target.value);
+  });
+
+</script>
+
+</body>
+</html>

@@ -1,9 +1,8 @@
 # Explainable Link Prediction (Drug-Disease Interaction) on Biomedical Knowledge Graphs using GNNs
 This repository contains the code and results for the MSc thesis titled "Explainable link prediction (drug–disease interaction) on Biomedical Knowledge Graphs with the use of Graph Neural Networks" by Sofia Sykallou, submitted to the University of the Peloponnese & NCSR “Democritos” MSc Programme in Data Science.
-
-## Overview
-This project focuses on predicting potential drug-disease interactions for drug repurposing using Graph Neural Networks (GNNs) applied to a biomedical knowledge graph. 
-The goal is to make these predictions interpretable using Explainable AI (XAI) techniques. The pipeline involves training a GCN for link prediction and then employing GNNExplainer to understand the factors driving the model's predictions.
+The focuses on predicting potential drug-disease interactions for drug repurposing using Graph Neural Networks (GNNs) applied to a biomedical knowledge graph. 
+The goal is to make these predictions interpretable using Explainable AI (XAI) techniques. 
+The pipeline involves training a GCN for link prediction and then employing GNNExplainer to understand the factors driving the model's predictions.
 
 ## Data
 * **Knowledge Graph:** The experiments utilize the iASiS Open Data Graph.

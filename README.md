@@ -5,8 +5,8 @@ The goal is to make these predictions interpretable using Explainable AI (XAI) t
 The pipeline involves training a GCN for link prediction and then employing GNNExplainer to understand the factors driving the model's predictions.
 
 <div style="display: flex; justify-content: center; gap: 20px;">
-  <img src="Results/pred_1.png" alt="GlutaricAciduriaType1_GlutaricAcid" width="45%">
-  <img src="Results/pred_2.png" alt="MJD_Lithium" width="45%">
+  <img src="Results/pred1.png" alt="GlutaricAciduriaType1_GlutaricAcid" width="45%">
+  <img src="Results/pred2.png" alt="MJD_Lithium" width="45%">
 </div>
 
 ## Data

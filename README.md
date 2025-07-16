@@ -21,7 +21,7 @@ The pipeline involves training a GCN for link prediction and then employing GNNE
 
 ## Code
 * The implementation is provided in the Python script:
-    `allpredictions_link_prediction_gcn_gnnexplainer_full_graph.py`
+    `allpredictions_link_prediction_gcn_gnnexplainer_full_graph.ipynb`
 
 ## Results and Visualizations
 * The GCN model achieved strong predictive performance on the link prediction task (Test AUC: 0.9604).

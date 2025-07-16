@@ -4,6 +4,11 @@ The focuses on predicting potential drug-disease interactions for drug repurposi
 The goal is to make these predictions interpretable using Explainable AI (XAI) techniques. 
 The pipeline involves training a GCN for link prediction and then employing GNNExplainer to understand the factors driving the model's predictions.
 
+<div style="display: flex; justify-content: center; gap: 20px;">
+  <img src="Results/pred_1.png" alt="GlutaricAciduriaType1_GlutaricAcid" width="45%">
+  <img src="Results/pred_2.png" alt="MJD_Lithium" width="45%">
+</div>
+
 ## Data
 * **Knowledge Graph:** The experiments utilize the iASiS Open Data Graph.
 * **Input Format:** The graph data was initially provided in Tab-Separated Values (TSV) format.
